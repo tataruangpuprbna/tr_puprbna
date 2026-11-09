@@ -206,12 +206,61 @@ function locateMe() {
     }
 }
 </script>
-<!-- Panel Ceklis Layer Ringkas -->
-<div id="layer-panel" style="position: absolute; bottom: 30px; right: 10px; background: white; padding: 10px; border-radius: 5px; z-index: 1000; box-shadow: 0 0 5px rgba(0,0,0,0.5);">
-    <b style="font-size: 13px;">🗺️ Layer:</b>
-    <div id="layer-list" style="font-size: 12px; margin-top: 5px;"></div>
+<!-- Panel Ceklis Layer Dropdown -->
+<div id="layer-panel" style="position: absolute; top: 10px; right: 10px; z-index: 1000; font-family: sans-serif; text-align: right;">
+    <!-- Tombol Buka/Tutup -->
+    <button onclick="document.getElementById('layer-list-container').style.display = (document.getElementById('layer-list-container').style.display === 'none' ? 'block' : 'none');" style="padding: 8px 12px; background: #00529B; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; box-shadow: 0 0 5px rgba(0,0,0,0.3);">
+        🗺️ Menu Layer
+    </button>
+    
+    <!-- Kotak Daftar Layer (Default Sembunyi) -->
+    <div id="layer-list-container" style="display: none; background: rgba(255, 255, 255, 0.95); padding: 10px; border-radius: 5px; margin-top: 5px; box-shadow: 0 0 5px rgba(0,0,0,0.5); min-width: 200px; max-height: 300px; overflow-y: auto; text-align: left;">
+        <div id="layer-list" style="font-size: 12px; display: flex; flex-direction: column; gap: 8px;">
+            <em style="color: gray;">Memuat layer...</em>
+        </div>
+    </div>
 </div>
+
 <script>
+window.onload = function() {
+    setTimeout(function() {
+        var m = window.map || window.olMap;
+        if(!m) return;
+        var list = document.getElementById('layer-list');
+        list.innerHTML = ''; // Bersihkan teks loading
+
+        m.getLayers().forEach(function(layer) {
+            if(layer instanceof ol.layer.Vector || layer instanceof ol.layer.Tile) {
+                var rawName = layer.get('name') || layer.get('title') || "Layer Tanpa Nama";
+                
+                // TRIK: Bersihkan nama layer dari kode HTML <img> agar rapi
+                var tempDiv = document.createElement("div");
+                tempDiv.innerHTML = rawName;
+                var cleanName = tempDiv.textContent || tempDiv.innerText || "";
+                cleanName = cleanName.trim(); // Hapus spasi berlebih
+                
+                if(cleanName === "" || cleanName === "Layer") cleanName = "Layer Peta";
+
+                var lbl = document.createElement('label');
+                lbl.style.display = 'flex';
+                lbl.style.alignItems = 'center';
+                lbl.style.cursor = 'pointer';
+                
+                var cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.checked = layer.getVisible();
+                cb.style.marginRight = '8px';
+                
+                cb.onchange = function() { layer.setVisible(this.checked); };
+                
+                lbl.appendChild(cb);
+                lbl.appendChild(document.createTextNode(cleanName));
+                list.appendChild(lbl);
+            }
+        });
+    }, 1500);
+};
+</script>
 window.onload = function() {
     setTimeout(function() {
         var m = window.map || window.olMap;
