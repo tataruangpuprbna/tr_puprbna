@@ -206,5 +206,33 @@ function locateMe() {
     }
 }
 </script>
+<!-- Panel Ceklis Layer Ringkas -->
+<div id="layer-panel" style="position: absolute; bottom: 30px; right: 10px; background: white; padding: 10px; border-radius: 5px; z-index: 1000; box-shadow: 0 0 5px rgba(0,0,0,0.5);">
+    <b style="font-size: 13px;">🗺️ Layer:</b>
+    <div id="layer-list" style="font-size: 12px; margin-top: 5px;"></div>
+</div>
+<script>
+window.onload = function() {
+    setTimeout(function() {
+        var m = window.map || window.olMap;
+        if(!m) return;
+        var list = document.getElementById('layer-list');
+        m.getLayers().forEach(function(layer) {
+            if(layer instanceof ol.layer.Vector || layer instanceof ol.layer.Tile) {
+                var name = layer.get('name') || layer.get('title') || "Layer";
+                var lbl = document.createElement('label');
+                lbl.style.display = 'block';
+                var cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.checked = layer.getVisible();
+                cb.onchange = function() { layer.setVisible(this.checked); };
+                lbl.appendChild(cb);
+                lbl.appendChild(document.createTextNode(" " + name));
+                list.appendChild(lbl);
+            }
+        });
+    }, 1500);
+};
+</script>
     </body>
 </html>
