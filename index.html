@@ -308,5 +308,26 @@ window.onload = function() {
 };
 </script>
 </script>
+<script>
+setTimeout(function() {
+    var m = window.map || window.olMap;
+    if (m) {
+        var layerBaru = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                url: 'APKSB_WGS84.geojson',
+                format: new ol.format.GeoJSON()
+            }),
+            style: new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 6,
+                    fill: new ol.style.Fill({color: 'blue'})
+                })
+            })
+        });
+        m.addLayer(layerBaru);
+        alert("Layer APKSB sudah ditambahkan!");
+    }
+}, 4000);
+</script>
     </body>
 </html>
