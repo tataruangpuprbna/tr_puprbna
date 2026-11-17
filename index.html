@@ -302,7 +302,10 @@ window.onload = function() {
     
     <div id="layer-list-container" style="display: none; background: rgba(255, 255, 255, 0.95); padding: 10px; border-radius: 5px; margin-top: 5px; box-shadow: 0 0 5px rgba(0,0,0,0.5); min-width: 200px; max-height: 300px; overflow-y: auto; text-align: left;">
         <div id="layer-list" style="font-size: 12px; display: flex; flex-direction: column; gap: 8px;">
-            <em style="color: gray;">Memuat layer...</em>
+            <label style="display: flex; align-items: center; cursor: pointer;">
+    <input type="checkbox" id="cb-apksb" checked style="margin-right: 8px;" onchange="var m=window.map||window.olMap; m.getLayers().forEach(function(l){ if(l.get('title')==='APKSB'){ l.setVisible(this.checked); } }.bind(this));">
+    APKSB
+</label>
         </div>
     </div>
 </div>
