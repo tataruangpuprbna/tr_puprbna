@@ -393,7 +393,7 @@ window.onload = function() {
 setTimeout(function() {
     var m = window.map || window.olMap;
     if (m) {
-        var layerBaru = new ol.layer.Vector({
+        window.layerAPKSB = new ol.layer.Vector({ // <--- Ubah jadi window.layerAPKSB
             source: new ol.source.Vector({
                 url: 'APKSB_WGS84.geojson',
                 format: new ol.format.GeoJSON()
@@ -405,9 +405,9 @@ setTimeout(function() {
                     stroke: new ol.style.Stroke({color: 'white', width: 2})
                 })
             }),
-            title: 'APKSB' 
+            title: 'APKSB'
         });
-        m.addLayer(layerBaru);
+        m.addLayer(window.layerAPKSB); // <--- Panggil window.layerAPKSB
     }
 }, 3000);
 
