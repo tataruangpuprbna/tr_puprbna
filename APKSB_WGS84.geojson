@@ -1,6 +1,6 @@
 {
 "type": "FeatureCollection",
-"name": "APKSB_WGS84",
+"name": "APKSB",
 "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
 "features": [
 { "type": "Feature", "properties": { "Tahun": "2016", "Nama": "Marianis" }, "geometry": { "type": "Point", "coordinates": [ 95.295365497780153, 5.537561209927786 ] } },
