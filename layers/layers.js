@@ -140,7 +140,7 @@ var lyr_TitikTeguran_8 = new ol.layer.Vector({
                 title: '<img src="styles/legend/TitikTeguran_8.png" /> Titik Teguran'
             });
 
-lyr_Gampong_0.setVisible(true);lyr_PKKPR_2026_1.setVisible(true);lyr_PKKPR_2025_2.setVisible(true);lyr_PKKPR_2024_3.setVisible(true);lyr_PKKPR_2023_4.setVisible(true);lyr_PKKPR__5.setVisible(true);lyr_PKKPR2020_2022_6.setVisible(true);lyr_JalanBNA_7.setVisible(true);lyr_TitikTeguran_8.setVisible(true);
+lyr_Gampong_0.setVisible(true);lyr_PKKPR_2026_1.setVisible(false);lyr_PKKPR_2025_2.setVisible(false);lyr_PKKPR_2024_3.setVisible(false);lyr_PKKPR_2023_4.setVisible(false);lyr_PKKPR__5.setVisible(false);lyr_PKKPR2020_2022_6.setVisible(false);lyr_JalanBNA_7.setVisible(false);lyr_TitikTeguran_8.setVisible(false);
 var layersList = [lyr_Gampong_0,lyr_PKKPR_2026_1,lyr_PKKPR_2025_2,lyr_PKKPR_2024_3,lyr_PKKPR_2023_4,lyr_PKKPR__5,lyr_PKKPR2020_2022_6,lyr_JalanBNA_7,lyr_TitikTeguran_8];
 lyr_Gampong_0.set('fieldAliases', {'PROVINSI': 'PROVINSI', 'KOTA': 'KOTA', 'KECAMATAN': 'KECAMATAN', 'GAMPONG': 'GAMPONG', 'SUMBER': 'SUMBER', 'Ha': 'Ha', });
 lyr_PKKPR_2026_1.set('fieldAliases', {'TglMasuk': 'TglMasuk', 'Nm': 'Nm', });
