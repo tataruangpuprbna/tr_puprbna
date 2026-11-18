@@ -469,7 +469,7 @@ setTimeout(function() {
         
         // Tambahkan ke peta
         m.addLayer(basemapSatelit);
-        basemapSatelit.setZIndex(0); // <--- Paksa posisi paling bawah
+        basemapSatelit.setZIndex(-999); // <--- Paksa posisi paling bawah
         basemapSatelit.setVisible(false);
         
         // Paksa matikan agar tidak menutupi layer lain di awal
