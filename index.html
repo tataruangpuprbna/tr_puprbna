@@ -453,5 +453,27 @@ window.onload = function() {
     }, 6000); 
 };
 </script>
+<script>
+setTimeout(function() {
+    var m = window.map || window.olMap;
+    if (m) {
+        var basemapSatelit = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                // URL Satelit Esri (Gratis, Tanpa API Key)
+                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                attributions: 'Tiles © Esri' 
+            }),
+            title: 'Satelit (Esri)', // Nama di menu ceklis
+            visible: false // Agar tidak langsung muncul saat web dibuka
+        });
+        
+        // Tambahkan ke peta
+        m.addLayer(basemapSatelit);
+        
+        // Paksa matikan agar tidak menutupi layer lain di awal
+        basemapSatelit.setVisible(false);
+    }
+}, 4000); // Jeda 4 detik agar peta utama siap
+</script>
     </body>
 </html>
