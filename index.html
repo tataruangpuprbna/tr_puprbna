@@ -301,29 +301,7 @@ window.onload = function() {
 <script>
     <!-- Panel Ceklis Layer Dropdown -->
 <script>
-// Menambahkan data GeoJSON BARU (APKSB)
-setTimeout(function() {
-    var m = window.map || window.olMap;
-    if (m) {
-        var layerBaru = new ol.layer.Vector({
-            source: new ol.source.Vector({
-                url: 'APKSB_WGS84.geojson',
-                format: new ol.format.GeoJSON()
-            }),
-            style: new ol.style.Style({
-                image: new ol.style.Circle({
-                    radius: 7,
-                    fill: new ol.style.Fill({color: 'blue'}),
-                    stroke: new ol.style.Stroke({color: 'white', width: 2})
-                })
-            }),
-            title: 'APKSB' // <--- NAMA LAYER ANDA DI SINI
-            visible: false
-        });
-        m.addLayer(layerBaru);
-    }
-}, 3000);
-
+</script>
 // Membuat Menu Ceklis Otomatis
 window.onload = function() {
     setTimeout(function() {
@@ -469,5 +447,5 @@ window.addEventListener('load', function() {
     }, 3000); 
 });
 </script>
-    </body>
+</body>
 </html>
