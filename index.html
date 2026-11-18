@@ -304,7 +304,6 @@ window.onload = function() {
     <button onclick="document.getElementById('layer-list-container').style.display = (document.getElementById('layer-list-container').style.display === 'none' ? 'block' : 'none');" style="padding: 8px 12px; background: #00529B; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; box-shadow: 0 0 5px rgba(0,0,0,0.3);">
         🗺️ Menu Layer
     </button>
-    
     <div id="layer-list-container" style="display: none; background: rgba(255, 255, 255, 0.95); padding: 10px; border-radius: 5px; margin-top: 5px; box-shadow: 0 0 5px rgba(0,0,0,0.5); min-width: 200px; max-height: 300px; overflow-y: auto; text-align: left;">
         <div id="layer-list" style="font-size: 12px; display: flex; flex-direction: column; gap: 8px;">
             <label style="display: flex; align-items: center; cursor: pointer;">
@@ -379,10 +378,8 @@ window.onload = function() {
     }, 3500); // Tunggu 3.5 detik agar APKSB selesai dimuat
 };
 </script>
-
-
-<!-- Panel Ceklis Layer Dropdown -->
-<div id="layer-panel" style="position: absolute; top: 75px; right: 10px; z-index: 1000; font-family: sans-serif; text-align: right;">
+<!-- PANEL MENU LAYER -->
+<div id="layer-panel" style="position: absolute; top: 90px; right: 10px; z-index: 1000; font-family: sans-serif; text-align: right;">
     <button onclick="document.getElementById('layer-list-container').style.display = (document.getElementById('layer-list-container').style.display === 'none' ? 'block' : 'none');" style="padding: 8px 12px; background: #00529B; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; box-shadow: 0 0 5px rgba(0,0,0,0.3);">
         🗺️ Menu Layer
     </button>
@@ -395,48 +392,71 @@ window.onload = function() {
 </div>
 
 <script>
-// 1. Tambahkan Data APKSB
-setTimeout(function() {
-    var m = window.map || window.olMap;
-    if (m) {
-        window.layerAPKSB = new ol.layer.Vector({ // <--- Ubah jadi window.layerAPKSB
-            source: new ol.source.Vector({
-                url: 'APKSB_WGS84.geojson',
-                format: new ol.format.GeoJSON()
-            }),
-            style: new ol.style.Style({
-                image: new ol.style.Circle({
-                    radius: 7,
-                    fill: new ol.style.Fill({color: 'blue'}),
-                    stroke: new ol.style.Stroke({color: 'white', width: 2})
-                })
-            }),
-            title: 'APKSB'
-        });
-        m.addLayer(window.layerAPKSB); // <--- Panggil window.layerAPKSB
-        window.layerAPKSB.setVisible(false);
-    }
-}, 3000);
+window.addEventListener('load', function() {
+    
+    // --- 1. TAMBAH BASEMAP SATELIT ESRI ---
+    setTimeout(function() {
+        var m = window.map || window.olMap;
+        if (m) {
+            var basemapSatelit = new ol.layer.Tile({
+                source: new ol.source.XYZ({
+                    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                    attributions: 'Tiles © Esri' 
+                }),
+                title: 'Satelit (Esri)',
+                visible: false
+            });
+            m.addLayer(basemapSatelit);
+            basemapSatelit.setZIndex(-999);
+        }
+    }, 1000);
 
-// 2. Buat Menu Ceklis
-window.onload = function() {
+    // --- 2. TAMBAH GEOJSON APKSB ---
+    setTimeout(function() {
+        var m = window.map || window.olMap;
+        if (m) {
+            window.layerAPKSB = new ol.layer.Vector({
+                source: new ol.source.Vector({
+                    url: 'APKSB_WGS84.geojson',
+                    format: new ol.format.GeoJSON()
+                }),
+                style: new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 7,
+                        fill: new ol.style.Fill({color: 'blue'}),
+                        stroke: new ol.style.Stroke({color: 'white', width: 2})
+                    })
+                }),
+                title: 'APKSB',
+                visible: false 
+            });
+            m.addLayer(window.layerAPKSB);
+        }
+    }, 2000);
+
+    // --- 3. BUAT MENU CEKLIS OTOMATIS ---
     setTimeout(function() {
         var m = window.map || window.olMap;
         if(!m) return;
         var list = document.getElementById('layer-list');
         if(!list) return;
+        
         list.innerHTML = ''; 
 
         m.getLayers().forEach(function(layer) {
             if(layer instanceof ol.layer.Vector || layer instanceof ol.layer.Tile) {
-                var rawName = layer.get('title') || layer.get('name');
-                if(!rawName && layer instanceof ol.layer.Tile) { rawName = "Basemap"; } 
-                else if (!rawName) { rawName = "Layer Peta"; }
-
+                
+                var rawName = layer.get('title') || layer.get('name') || "Layer Tanpa Nama";
+                
                 var tempDiv = document.createElement("div");
                 tempDiv.innerHTML = rawName;
                 var cleanName = tempDiv.textContent || tempDiv.innerText || "";
                 cleanName = cleanName.replace(/undefined/gi, "").replace(/null/gi, "").trim();
+
+                // FILTER: Sembunyikan Layer Peta / Basemap bawaan
+                if(cleanName.toLowerCase().includes('layer peta') || cleanName.toLowerCase().includes('basemap')) {
+                    return; 
+                }
 
                 var lbl = document.createElement('label');
                 lbl.style.display = 'flex';
@@ -455,32 +475,8 @@ window.onload = function() {
                 list.appendChild(lbl);
             }
         });
-    }, 6000); 
-};
-</script>
-<script>
-setTimeout(function() {
-    var m = window.map || window.olMap;
-    if (m) {
-        var basemapSatelit = new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                // URL Satelit Esri (Gratis, Tanpa API Key)
-                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-                attributions: 'Tiles © Esri' 
-            }),
-            title: 'Satelit (Esri)', // Nama di menu ceklis
-            visible: false // Agar tidak langsung muncul saat web dibuka
-        });
-        
-        // Tambahkan ke peta
-        m.addLayer(basemapSatelit);
-        basemapSatelit.setZIndex(-999); // <--- Paksa posisi paling bawah
-        basemapSatelit.setVisible(false);
-        
-        // Paksa matikan agar tidak menutupi layer lain di awal
-        basemapSatelit.setVisible(false);
-    }
-}, 4000); // Jeda 4 detik agar peta utama siap
+    }, 3000); 
+});
 </script>
     </body>
 </html>
