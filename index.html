@@ -216,18 +216,6 @@ window.onload = function() {
 
         m.getLayers().forEach(function(layer) {
             if(layer instanceof ol.layer.Vector || layer instanceof ol.layer.Tile) {
-                } else if (layer instanceof ol.layer.Tile && layer.get('title') === 'Satelit (Esri)') {
-            // Paksa Satelit Esri untuk tetap muncul
-            var labelEsri = document.createElement('label');
-            labelEsri.style.display = 'block';
-            var cbEsri = document.createElement('input');
-            cbEsri.type = 'checkbox';
-            cbEsri.checked = layer.getVisible();
-            cbEsri.onchange = function() { layer.setVisible(this.checked); };
-            labelEsri.appendChild(cbEsri);
-            labelEsri.appendChild(document.createTextNode(" Satelit (Esri)"));
-            list.appendChild(labelEsri);
-        }
                                 // Filter untuk membuang "Layer Peta" dan "Basemap" dari daftar
                 var layerTitle = layer.get('title') || layer.get('name') || "";
                 if (layerTitle.toLowerCase().includes('layer peta') || layerTitle.toLowerCase().includes('basemap')) {
