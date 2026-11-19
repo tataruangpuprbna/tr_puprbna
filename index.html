@@ -399,47 +399,44 @@ window.addEventListener('load', function() {
     }, 2000);
 
     // 3. MENU CEKLIS OTOMATIS
-    setTimeout(function() {
-        var m = window.map || window.olMap;
-        if(!m) return;
-        var list = document.getElementById('layer-list');
-        if(!list) return;
-        
-        list.innerHTML = ''; 
+        setTimeout(function() {
+            var list = document.getElementById('layer-list');
+            if(!list) return;
+            list.innerHTML = ''; 
+            
+            m.getLayers().forEach(function(layer) {
+                if(layer instanceof ol.layer.Vector || layer instanceof ol.layer.Tile) {
+                    var rawName = layer.get('title') || layer.get('name') || "Layer Tanpa Nama";
+                    
+                    var tempDiv = document.createElement("div");
+                    tempDiv.innerHTML = rawName;
+                    var cleanName = tempDiv.textContent || tempDiv.innerText || "";
+                    cleanName = cleanName.replace(/undefined/gi, "").replace(/null/gi, "").trim();
+                    
+                    // Filter: Sembunyikan Layer Peta, Basemap, dan Tanpa Nama
+                    var lowerName = cleanName.toLowerCase();
+                    if(lowerName.includes('layer peta') || lowerName.includes('basemap') || lowerName.includes('tanpa nama')) {
+                        return; 
+                    }
 
-        m.getLayers().forEach(function(layer) {
-            if(layer instanceof ol.layer.Vector || layer instanceof ol.layer.Tile) {
-                
-                var rawName = layer.get('title') || layer.get('name') || "Layer Tanpa Nama";
-                
-                var tempDiv = document.createElement("div");
-                tempDiv.innerHTML = rawName;
-                var cleanName = tempDiv.textContent || tempDiv.innerText || "";
-                cleanName = cleanName.replace(/undefined/gi, "").replace(/null/gi, "").trim();
-
-                // Sembunyikan Layer Peta
-                if(cleanName.toLowerCase().includes('layer peta') || cleanName.toLowerCase().includes('basemap')) {
-                    return; 
+                    var lbl = document.createElement('label');
+                    lbl.style.display = 'flex'; 
+                    lbl.style.alignItems = 'center'; 
+                    lbl.style.cursor = 'pointer';
+                    
+                    var cb = document.createElement('input');
+                    cb.type = 'checkbox'; 
+                    cb.checked = layer.getVisible(); 
+                    cb.style.marginRight = '8px';
+                    
+                    cb.onchange = function() { layer.setVisible(this.checked); };
+                    
+                    lbl.appendChild(cb); 
+                    lbl.appendChild(document.createTextNode(cleanName)); 
+                    list.appendChild(lbl);
                 }
-
-                var lbl = document.createElement('label');
-                lbl.style.display = 'flex';
-                lbl.style.alignItems = 'center';
-                lbl.style.cursor = 'pointer';
-                
-                var cb = document.createElement('input');
-                cb.type = 'checkbox';
-                cb.checked = layer.getVisible();
-                cb.style.marginRight = '8px';
-                
-                cb.onchange = function() { layer.setVisible(this.checked); };
-                
-                lbl.appendChild(cb);
-                lbl.appendChild(document.createTextNode(cleanName));
-                list.appendChild(lbl);
-            }
-        });
-    }, 3000); 
+            });
+        }, 1000); 
 });
 </script>
 </body>
