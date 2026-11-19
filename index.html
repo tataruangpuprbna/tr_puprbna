@@ -308,5 +308,44 @@ var cekPeta = setInterval(function() {
     }
 }, 500); 
 </script>
+<script>
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        var m = window.map || window.olMap;
+        if (!m) return;
+
+        // --- 1. TAMBAH ESRI SATELIT ---
+        var basemapSatelit = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                attributions: 'Tiles © Esri' 
+            }),
+            title: 'Satelit (Esri)',
+            visible: false // Agar tidak langsung terbuka
+        });
+        m.addLayer(basemapSatelit);
+        basemapSatelit.setZIndex(-999); // Taruh paling bawah
+
+        // --- 2. TAMBAH GEOJSON APKSB ---
+        window.layerAPKSB = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                url: 'APKSB_WGS84.geojson', // Pastikan nama file ini persis
+                format: new ol.format.GeoJSON()
+            }),
+            style: new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 7,
+                    fill: new ol.style.Fill({color: 'blue'}),
+                    stroke: new ol.style.Stroke({color: 'white', width: 2})
+                })
+            }),
+            title: 'APKSB',
+            visible: false // Agar tidak langsung terbuka
+        });
+        m.addLayer(window.layerAPKSB);
+
+    }, 2500); // Tunggu 2.5 detik agar peta utama siap
+});
+</script>
 </body>
 </html>
