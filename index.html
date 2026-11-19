@@ -357,70 +357,32 @@ window.onload = function() {
 
 <script>
 window.addEventListener('load', function() {
-    
-    // 1. BASEMAP SATELIT ESRI
     setTimeout(function() {
         var m = window.map || window.olMap;
-        if (m) {
-            var basemapSatelit = new ol.layer.Tile({
-                source: new ol.source.XYZ({
-                    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-                    attributions: 'Tiles © Esri' 
-                }),
-                title: 'Satelit (Esri)',
-                visible: false
-            });
-            m.addLayer(basemapSatelit);
-            basemapSatelit.setZIndex(-999);
-        }
-    }, 1000);
-
-    // 2. GEOJSON APKSB
-    setTimeout(function() {
-        var m = window.map || window.olMap;
-        if (m) {
-            window.layerAPKSB = new ol.layer.Vector({
-                source: new ol.source.Vector({
-                    url: 'APKSB_WGS84.geojson',
-                    format: new ol.format.GeoJSON()
-                }),
-                style: new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius: 7,
-                        fill: new ol.style.Fill({color: 'blue'}),
-                        stroke: new ol.style.Stroke({color: 'white', width: 2})
-                    })
-                }),
-                title: 'APKSB',
-                visible: false 
-            });
-            m.addLayer(window.layerAPKSB);
-        }
-    }, 2000);
-
-    // 3. MENU CEKLIS OTOMATIS
-<script>
-setTimeout(function() {
-    var m = window.map || window.olMap;
-    if (!m) return;
-    var list = document.getElementById('layer-list');
-    if (!list) return;
-    
-    list.innerHTML = ''; 
-    m.getLayers().forEach(function(layer) {
-        var isEsri = (layer instanceof ol.layer.Tile && layer.get('title') === 'Satelit (Esri)');
+        if (!m) return;
+        var list = document.getElementById('layer-list');
+        if (!list) return;
         
-        // Hanya tampilkan Vektor ATAU Esri
-        if (layer instanceof ol.layer.Vector || isEsri) {
-            var nama = layer.get('title') || layer.get('name') || "";
+        list.innerHTML = ''; 
+        
+        m.getLayers().forEach(function(layer) {
+            // Cek apakah ini layer Esri
+            var isEsri = (layer instanceof ol.layer.Tile && layer.get('title') === 'Satelit (Esri)');
             
-            // Bersihkan nama dari kode HTML
-            var temp = document.createElement("div");
-            temp.innerHTML = nama;
-            var teks = temp.textContent || temp.innerText || "";
-            
-            // Tampilkan jika teksnya ada isinya
-            if(teks.trim() !== "") {
+            // Hanya proses Vektor atau Esri
+            if (layer instanceof ol.layer.Vector || isEsri) {
+                var nama = layer.get('title') || layer.get('name') || "";
+                
+                var temp = document.createElement("div");
+                temp.innerHTML = nama;
+                var teks = temp.textContent || temp.innerText || "";
+                
+                // Filter: Buang "Layer Peta" dan "Tanpa Nama"
+                var lowerTeks = teks.toLowerCase();
+                if (lowerTeks.includes('layer peta') || lowerTeks.includes('tanpa nama') || teks.trim() === "") {
+                    return;
+                }
+
                 var label = document.createElement('label');
                 label.style.display = 'block';
                 var cb = document.createElement('input');
@@ -431,9 +393,9 @@ setTimeout(function() {
                 label.appendChild(document.createTextNode(" " + teks));
                 list.appendChild(label);
             }
-        }
-    });
-}, 3500);
+        });
+    }, 4000); 
+});
 </script>
 </body>
 </html>
