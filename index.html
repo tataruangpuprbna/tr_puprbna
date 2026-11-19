@@ -312,7 +312,52 @@ window.onload = function() {
         </div>
     </div>
 </div>
+<script>
+// Fungsi untuk mengecek apakah peta sudah siap
+var cekPeta = setInterval(function() {
+    var m = window.map || window.olMap;
+    var list = document.getElementById('layer-list');
+    
+    // Jika peta sudah ada DAN elemen list sudah ada
+    if (m && list) {
+        clearInterval(cekPeta); // Hentikan pengecekan
+        
+        list.innerHTML = ''; 
+        var jumlahLayer = 0;
 
-<script src="menu.js"></script>
+        m.getLayers().forEach(function(layer) {
+            var isEsri = (layer instanceof ol.layer.Tile && layer.get('title') === 'Satelit (Esri)');
+            
+            if (layer instanceof ol.layer.Vector || isEsri) {
+                var nama = layer.get('title') || layer.get('name') || "";
+                var temp = document.createElement("div");
+                temp.innerHTML = nama;
+                var teks = temp.textContent || temp.innerText || "";
+                
+                var lowerTeks = teks.toLowerCase();
+                // Filter: Buang "layer peta", "basemap", "tanpa nama", dan teks kosong
+                if (lowerTeks.includes('layer peta') || lowerTeks.includes('basemap') || lowerTeks.includes('tanpa nama') || teks.trim() === "") {
+                    return;
+                }
+
+                var label = document.createElement('label');
+                label.style.display = 'block';
+                var cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.checked = layer.getVisible();
+                cb.onchange = function() { layer.setVisible(this.checked); };
+                label.appendChild(cb);
+                label.appendChild(document.createTextNode(" " + teks));
+                list.appendChild(label);
+                jumlahLayer++;
+            }
+        });
+        
+        if(jumlahLayer === 0) {
+            list.innerHTML = '<em style="color: red;">Layer tidak ditemukan</em>';
+        }
+    }
+}, 500); // Cek setiap 0.5 detik sampai peta siap
+</script>
 </body>
 </html>
