@@ -344,11 +344,11 @@ window.onload = function() {
 </div>
 <!-- PANEL MENU LAYER -->
 <div id="layer-panel" style="position: absolute; top: 75px; right: 10px; z-index: 9999; font-family: sans-serif; text-align: right;">
-    <button onclick="document.getElementById('layer-list-container').style.display = (document.getElementById('layer-list-container').style.display === 'none' ? 'block' : 'none');" style="padding: 8px 12px; background: #00529B; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; box-shadow: 0 0 5px rgba(0,0,0,0.3);">
+    <button onclick="document.getElementById('layer-list-container').style.display = (document.getElementById('layer-list-container').style.display === 'none' ? 'block' : 'none');" style="padding: 8px 12px; background: #00529B; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
         🗺️ Menu Layer
     </button>
     
-    <div id="layer-list-container" style="display: none; background: rgba(255, 255, 255, 0.95); padding: 10px; border-radius: 5px; margin-top: 5px; box-shadow: 0 0 5px rgba(0,0,0,0.5); min-width: 200px; max-height: 300px; overflow-y: auto; text-align: left;">
+    <div id="layer-list-container" style="display: none; background: rgba(255, 255, 255, 0.95); padding: 10px; border-radius: 5px; margin-top: 5px; min-width: 200px; max-height: 300px; overflow-y: auto; text-align: left;">
         <div id="layer-list" style="font-size: 12px; display: flex; flex-direction: column; gap: 8px;">
             <em style="color: gray;">Memuat layer...</em>
         </div>
@@ -366,19 +366,16 @@ window.addEventListener('load', function() {
         list.innerHTML = ''; 
         
         m.getLayers().forEach(function(layer) {
-            // Cek apakah ini layer Esri
             var isEsri = (layer instanceof ol.layer.Tile && layer.get('title') === 'Satelit (Esri)');
             
-            // Hanya proses Vektor atau Esri
             if (layer instanceof ol.layer.Vector || isEsri) {
                 var nama = layer.get('title') || layer.get('name') || "";
-                
                 var temp = document.createElement("div");
                 temp.innerHTML = nama;
                 var teks = temp.textContent || temp.innerText || "";
                 
-                // Filter: Buang "Layer Peta" dan "Tanpa Nama"
                 var lowerTeks = teks.toLowerCase();
+                // Filter: Buang "layer peta" dan "tanpa nama"
                 if (lowerTeks.includes('layer peta') || lowerTeks.includes('tanpa nama') || teks.trim() === "") {
                     return;
                 }
