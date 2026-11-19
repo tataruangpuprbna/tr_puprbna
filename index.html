@@ -299,43 +299,6 @@ window.onload = function() {
 </script>
 </script>
 window.onload = function() {
-    setTimeout(function() {
-        var m = window.map || window.olMap;
-        if(!m) return;
-        var list = document.getElementById('layer-list');
-        list.innerHTML = ''; 
-
-        m.getLayers().forEach(function(layer) {
-            if(layer instanceof ol.layer.Vector || layer instanceof ol.layer.Tile) {
-                var rawName = layer.get('title') || layer.get('name');
-                
-                if(!rawName && layer instanceof ol.layer.Tile) { rawName = "Basemap"; } 
-                else if (!rawName) { rawName = "Layer Tanpa Nama"; }
-
-                var tempDiv = document.createElement("div");
-                tempDiv.innerHTML = rawName;
-                var cleanName = tempDiv.textContent || tempDiv.innerText || "";
-                cleanName = cleanName.replace(/undefined/gi, "").replace(/null/gi, "").trim();
-
-                var lbl = document.createElement('label');
-                lbl.style.display = 'flex';
-                lbl.style.alignItems = 'center';
-                lbl.style.cursor = 'pointer';
-                
-                var cb = document.createElement('input');
-                cb.type = 'checkbox';
-                cb.checked = layer.getVisible();
-                cb.style.marginRight = '8px';
-                
-                cb.onchange = function() { layer.setVisible(this.checked); };
-                
-                lbl.appendChild(cb);
-                lbl.appendChild(document.createTextNode(cleanName));
-                list.appendChild(lbl);
-            }
-        });
-    }, 3500); // Tunggu 3.5 detik agar APKSB selesai dimuat
-};
 </script>
 <div id="layer-panel" style="position: absolute; top: 75px; right: 10px; z-index: 9999; text-align: right;">
     <button style="padding: 8px 12px; background: #00529B; color: white; border: none; border-radius: 5px; font-weight: bold;">
@@ -376,6 +339,44 @@ window.addEventListener('load', function() {
                 
                 var lowerTeks = teks.toLowerCase();
                 // Filter: Buang "layer peta" dan "tanpa nama"
+                if (lowerTeks.includes('layer peta') || lowerTeks.includes('tanpa nama') || teks.trim() === "") {
+                    return;
+                }
+
+                var label = document.createElement('label');
+                label.style.display = 'block';
+                var cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.checked = layer.getVisible();
+                cb.onchange = function() { layer.setVisible(this.checked); };
+                label.appendChild(cb);
+                label.appendChild(document.createTextNode(" " + teks));
+                list.appendChild(label);
+            }
+        });
+    }, 4000); 
+});
+</script>
+<script>
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        var m = window.map || window.olMap;
+        if (!m) return;
+        var list = document.getElementById('layer-list');
+        if (!list) return;
+        
+        list.innerHTML = ''; 
+        
+        m.getLayers().forEach(function(layer) {
+            var isEsri = (layer instanceof ol.layer.Tile && layer.get('title') === 'Satelit (Esri)');
+            
+            if (layer instanceof ol.layer.Vector || isEsri) {
+                var nama = layer.get('title') || layer.get('name') || "";
+                var temp = document.createElement("div");
+                temp.innerHTML = nama;
+                var teks = temp.textContent || temp.innerText || "";
+                
+                var lowerTeks = teks.toLowerCase();
                 if (lowerTeks.includes('layer peta') || lowerTeks.includes('tanpa nama') || teks.trim() === "") {
                     return;
                 }
