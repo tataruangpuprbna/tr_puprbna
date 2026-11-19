@@ -225,6 +225,11 @@ var cekPeta = setInterval(function() {
                 var temp = document.createElement("div");
                 temp.innerHTML = nama;
                 var teks = temp.textContent || temp.innerText || "";
+                                var teksRapi = teks;
+                if ((teks.match(/Jalan/g) || []).length > 1) {
+                    teksRapi = teks.replace(/(Jalan)/g, '<br>$1').trim();
+                    if (teksRapi.startsWith('<br>')) { teksRapi = teksRapi.substring(4); }
+                }
                 
                 var lowerTeks = teks.toLowerCase();
                 // Filter: Buang "layer peta", "basemap", "tanpa nama", dan teks kosong
@@ -242,7 +247,9 @@ var cekPeta = setInterval(function() {
                 cb.checked = layer.getVisible();
                 cb.onchange = function() { layer.setVisible(this.checked); };
                 label.appendChild(cb);
-                label.appendChild(document.createTextNode(" " + teks));
+                var spanTeks = document.createElement('span');
+                spanTeks.innerHTML = teksRapi;
+                label.appendChild(spanTeks);
                 list.appendChild(label);
                 jumlahLayer++;
             }
@@ -302,7 +309,9 @@ var cekPeta = setInterval(function() {
                 cb.checked = layer.getVisible();
                 cb.onchange = function() { layer.setVisible(this.checked); };
                 label.appendChild(cb);
-                label.appendChild(document.createTextNode(" " + teks));
+                var spanTeks = document.createElement('span');
+                spanTeks.innerHTML = teksRapi;
+                label.appendChild(spanTeks);
                 list.appendChild(label);
                 jumlahLayer++;
             }
