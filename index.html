@@ -399,7 +399,8 @@ window.addEventListener('load', function() {
     }, 2000);
 
     // 3. MENU CEKLIS OTOMATIS
-        setTimeout(function() {
+<script>
+setTimeout(function() {
     var m = window.map || window.olMap;
     if (!m) return;
     var list = document.getElementById('layer-list');
@@ -407,15 +408,18 @@ window.addEventListener('load', function() {
     
     list.innerHTML = ''; 
     m.getLayers().forEach(function(layer) {
-        // Hanya tampilkan yang BUKAN basemap/Tile
-        if (layer instanceof ol.layer.Vector) {
+        var isEsri = (layer instanceof ol.layer.Tile && layer.get('title') === 'Satelit (Esri)');
+        
+        // Hanya tampilkan Vektor ATAU Esri
+        if (layer instanceof ol.layer.Vector || isEsri) {
             var nama = layer.get('title') || layer.get('name') || "";
             
-            // Bersihkan nama
+            // Bersihkan nama dari kode HTML
             var temp = document.createElement("div");
             temp.innerHTML = nama;
             var teks = temp.textContent || temp.innerText || "";
             
+            // Tampilkan jika teksnya ada isinya
             if(teks.trim() !== "") {
                 var label = document.createElement('label');
                 label.style.display = 'block';
@@ -429,8 +433,7 @@ window.addEventListener('load', function() {
             }
         }
     });
-}, 3500); 
-});
+}, 3500);
 </script>
 </body>
 </html>
